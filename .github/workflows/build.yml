@@ -1,10 +1,5 @@
 name: Build Artifacts
-
-on:
-  push:
-    branches: [ "build" ]
-  pull_request:
-    branches: [ "build" ]
+on: [push, pull_request]
 
 jobs:
   build:
