@@ -10,6 +10,11 @@ All dependencies are provided in this repository. Building the program is simple
 # TODO:
 
 - [ ] Socks4 support
-  - [ ] Socks4a support
+  - [x] Connect
+  - [ ] Bind
+  - [ ] Socks4a domain name resolve
 - [ ] Socks5 support
-  - [ ] Socks5 username/password authentication
+  - [ ] Connect
+  - [ ] Bind
+  - [ ] UDP
+  - [ ] Authentication: username/password
