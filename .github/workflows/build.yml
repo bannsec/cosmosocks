@@ -2,9 +2,9 @@ name: Build Artifacts
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "build" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "build" ]
 
 jobs:
   build:
