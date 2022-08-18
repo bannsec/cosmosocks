@@ -23,3 +23,4 @@ jobs:
         name: cosmosocks
         # A file, directory or wildcard pattern that describes what to upload
         path: cosmosocks_server*.com
+        if-no-files-found: error
