@@ -4,6 +4,9 @@ This is a silly socks program built without a purpose. Primarily, I just wanted 
 # Running
 The two binaries that are built are `cosmosocks_server.com` and `cosmosocks_server_ape.com`. The two binaries are functionally the same, but the former will unpack itself into a temporary directory while the later will dynamically overwrite itself.
 
+# Downloading
+Release binaries are available on [GitHub](https://github.com/bannsec/cosmosocks/releases/latest).
+
 # Building
 All dependencies are provided in this repository. Building the program is simple as running `make`.
 
