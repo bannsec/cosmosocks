@@ -1,0 +1,1 @@
+bool handle_new_socks4_connection(int sockfd);
