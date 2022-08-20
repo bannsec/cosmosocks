@@ -12,7 +12,9 @@ jobs:
       run: make
 
     - name: tests
-      run: make test
+      run: |
+          echo 0 | sudo tee /proc/sys/fs/binfmt_misc/status
+          make test
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
