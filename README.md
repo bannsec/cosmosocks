@@ -1,5 +1,13 @@
 [![Build Artifacts](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml)
 
+![Windows](https://github.com/bannsec/cosmosocks/raw/master/icons/windows.png)
+![Apple](https://github.com/bannsec/cosmosocks/raw/master/icons/apple.png)
+![Ubuntu](https://github.com/bannsec/cosmosocks/raw/master/icons/ubuntu.png)
+![Android](https://github.com/bannsec/cosmosocks/raw/master/icons/android.png)
+![OpenBSD](https://github.com/bannsec/cosmosocks/raw/master/icons/openbsd.png)
+![NetBSD](https://github.com/bannsec/cosmosocks/raw/master/icons/netbsd.png)
+![FreeBSD](https://github.com/bannsec/cosmosocks/raw/master/icons/freebsd.png)
+
 # Overview
 This is a silly socks program built without a purpose. Primarily, I just wanted to learn more about the socks protocol internals. To add a twist, my goal is to build it entirely in [Cosmopolitian libc](https://justine.lol/cosmopolitan). This should allow the socks program to run across any platform cosmopolitan can run on, which includes Windows, Linux, and MacOS.
 
