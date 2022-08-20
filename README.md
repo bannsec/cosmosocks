@@ -17,7 +17,11 @@ All dependencies are provided in this repository. Building the program is simple
   - [ ] Bind
   - [ ] Socks4a domain name resolve
 - [ ] Socks5 support
-  - [ ] Connect
-  - [ ] Bind
+  - [x] Connect IPv4
+  - [ ] Connect IPv6
+  - [ ] Connect domain name resolve
+  - [ ] Bind IPv4
+  - [ ] Bind IPv6
   - [ ] UDP
   - [ ] Authentication: username/password
+  - [ ] Handle returning error codes

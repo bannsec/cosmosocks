@@ -1,0 +1,1 @@
+bool handle_new_socks5_connection(int sockfd);

@@ -14,6 +14,8 @@
 // https://en.wikipedia.org/wiki/SOCKS
 
 #include "socks4.h"
+#include "socks5.h"
+
 
 // Function: handle_new_server_connection
 // Description:
@@ -33,25 +35,11 @@ static void handle_new_server_connection(int sock) {
     if (version == 4) {
         handle_new_socks4_connection(sock);
     } else if (version == 5) {
-        //handle_new_socks5_connection(sock);
+        handle_new_socks5_connection(sock);
     } else {
         //fprintf(stderr, "Unsupported SOCKS version: %d\n", version);
         close(sock);
     }
-
-    /*
-    // Socks5 protocol -- not supported yet
-    if (buf[0] == 0x05) {
-        return;
-        if (buf[1] == 0x01) {
-            return; //handle_connect_request(sock);
-        } else if (buf[1] == 0x02) {
-            return; //handle_bind_request(sock);
-        } else if (buf[1] == 0x03) {
-            return; // handle_udp_associate_request(sock);
-        }
-    }
-    */
 }
 
 // Function: start_socks_server
