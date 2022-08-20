@@ -26,6 +26,8 @@ typedef struct {
     uint32_t ip;
 } socks4_response;
 
+#include "common.c"
+
 // Function: read_socks4_request
 // Description: Reads a SOCKS4 request from the socket.
 //              Assumes protocol version has already been read and is 4
@@ -137,87 +139,6 @@ static bool send_socks4_response(int sock, char reply, uint16_t port, uint32_t i
     return write_socks4_response(sock, &response);
 }
 
-// Function: connect_sockets
-// Description: Connects two sockets, reads from socket1 and writes to socket2 and vice versa.
-// Parameters:
-//   int sock1 - the socket to read from
-//   int sock2 - the socket to write to
-// Returns: boolean indicating success or failure
-static bool connect_socks4_sockets(int sock1, int sock2) {
-    char buffer[1024] = {0};
-    fd_set fds;
-    int max_fd = sock1 > sock2 ? sock1 : sock2;
-    
-    // Timeout after 1 second
-    //struct timeval timeout;
-    //timeout.tv_sec = 1;
-    //timeout.tv_usec = 0;
-    
-
-    while (true) {
-        FD_ZERO(&fds);
-        FD_SET(sock1, &fds);
-        FD_SET(sock2, &fds);
-
-        // Select on both sockets
-        int n = select(max_fd + 1, &fds, NULL, NULL, NULL);
-        if (n < 0) {
-            perror("select");
-            return false;
-        }
-        if (n == 0) {
-            // Timeout
-            continue;
-        }
-        if (FD_ISSET(sock1, &fds)) {
-            // Read from sock1
-            n = read(sock1, buffer, sizeof(buffer));
-            if (n < 0) {
-                perror("read");
-                return false;
-            }
-            if (n == 0) {
-                // Socket closed
-                return true;
-            }
-            // Write to sock2
-            n = write(sock2, buffer, n);
-            if (n < 0) {
-                perror("write");
-                return false;
-            }
-            if (n == 0) {
-                // Socket closed
-                return true;
-            }
-        }
-
-        if (FD_ISSET(sock2, &fds)) {
-            // Read from sock2
-            n = read(sock2, buffer, sizeof(buffer));
-            if (n < 0) {
-                perror("read");
-                return false;
-            }
-            if (n == 0) {
-                // Socket closed
-                return true;
-            }
-            // Write to sock1
-            n = write(sock1, buffer, n);
-            if (n < 0) {
-                perror("write");
-                return false;
-            }
-            if (n == 0) {
-                // Socket closed
-                return true;
-            }
-        }
-    }
-    return true;
-}
-
 // Function: handle_socks4_connect
 // Description: Handles a SOCKS4 connect request.
 //              Attempts to connect to the specified host and port.
@@ -296,7 +217,7 @@ static bool handle_socks4_connect(int sock, socks4_request *request) {
     send_socks4_response(sock, 0x5a, request->port, request->ip);
 
     // Connect the sockets
-    return connect_socks4_sockets(sock, sockfd);
+    return connect_sockets(sock, sockfd);
 }
 
 // Function: handle_new_socks4_connection
