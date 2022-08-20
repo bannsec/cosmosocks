@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Print script file name
+echo "Testing: $0 $1 $2"
+
 # Start the socks server
 $1 -p $2 &
 SOCKS_PID=$!

@@ -19,7 +19,7 @@ All dependencies are provided in this repository. Building the program is simple
 - [ ] Socks5 support
   - [x] Connect IPv4
   - [ ] Connect IPv6
-  - [ ] Connect domain name resolve
+  - [x] Connect domain name resolve (socks5h)
   - [ ] Bind IPv4
   - [ ] Bind IPv6
   - [ ] UDP

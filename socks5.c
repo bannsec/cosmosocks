@@ -17,6 +17,7 @@ uint8_t num_methods = 0;
 typedef struct {
     uint8_t atype;
     uint8_t *addr;
+    uint8_t addr_size;
     uint16_t port;
 } socks5_address;
 
@@ -84,15 +85,14 @@ socks5_address *read_socks5_address(int sock) {
             if (n == 0) return NULL;
             break;
         case 3:
-            addr->addr = malloc(1);
-            n = read(sock, addr->addr, 1);
+            n = read(sock, &addr->addr_size, 1);
             if (n < 0) {
-                perror("read addr");
+                perror("read addr_size");
                 return NULL;
             }
             if (n == 0) return NULL;
-            addr->addr = realloc(addr->addr, addr->addr[0] + 1);
-            n = read(sock, addr->addr + 1, n);
+            addr->addr = malloc(addr->addr_size);
+            n = read(sock, addr->addr, addr->addr_size);
             if (n < 0) {
                 perror("read addr");
                 return NULL;
@@ -153,13 +153,13 @@ bool send_socks5_response(int sock, uint8_t status, socks5_address *address) {
                 return false;
             }
             if (n == 0) return false;
-            n = write(sock, &address->addr[0], 1);
+            n = write(sock, &address->addr_size, 1);
             if (n < 0) {
                 perror("write addr");
                 return false;
             }
             if (n == 0) return false;
-            n = write(sock, address->addr[1], address->addr[0]);
+            n = write(sock, address->addr, address->addr_size);
             if (n < 0) {
                 perror("write addr");
                 return false;
@@ -222,7 +222,37 @@ bool handle_connect_command(int sock) {
 
         return connect_sockets(sock, new_sock);
     } else if ( addr->atype == 3) {
-        puts("Domain name not supported");
+        // Resolve hostname to IP address in network byte order
+        struct hostent *host = gethostbyname((char *)addr->addr);
+        if (host == NULL) {
+            perror("gethostbyname");
+            return false;
+        } else if (host->h_addrtype != AF_INET) {
+            perror("gethostbyname");
+            return false;
+        } else if (host->h_addr_list[0] == NULL) {
+            perror("gethostbyname");
+            return false;
+        } else {
+            new_sock = socket(AF_INET, SOCK_STREAM, 0);
+            if (new_sock < 0) {
+                perror("socket");
+                return false;
+            }
+            // Connect forward
+            struct sockaddr_in forward_addr;
+            forward_addr.sin_family = AF_INET;
+            forward_addr.sin_port = addr->port;
+            forward_addr.sin_addr.s_addr = *((uint32_t *)host->h_addr_list[0]);
+            int n = connect(new_sock, (struct sockaddr *)&forward_addr, sizeof(forward_addr));
+            if (n < 0) {
+                perror("connect");
+                return false;
+            }
+            // Send success response
+            if ( !send_socks5_response(sock, 0x00, addr) ) return false;
+            return connect_sockets(sock, new_sock);
+        }
     }
 
     else send_socks5_response(sock, 0x08, addr);
