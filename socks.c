@@ -63,6 +63,9 @@ static void handle_new_server_connection(int sock) {
 //  - ip: the ip address to listen on
 // Returns: boolean indicating success or failure
 bool start_socks_server(int port, char *ip) {
+    // Tell the system we won't be reaping zombies
+    signal(SIGCHLD, SIG_IGN);
+
     // Create a socket
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
