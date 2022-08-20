@@ -12,7 +12,7 @@
 This is a silly socks program built without a purpose. Primarily, I just wanted to learn more about the socks protocol internals. To add a twist, my goal is to build it entirely in [Cosmopolitian libc](https://justine.lol/cosmopolitan). This should allow the socks program to run across any platform cosmopolitan can run on, which includes Windows, Linux, and MacOS.
 
 # Running
-The two binaries that are built are `cosmosocks_server.com` and `cosmosocks_server_ape.com`. The two binaries are functionally the same, but the former will unpack itself into a temporary directory while the later will dynamically overwrite itself.
+The two binaries that are built are `cosmosocks_server` and `cosmosocks_server_ape`. The two binaries are functionally the same, but the former will unpack itself into a temporary directory while the later will dynamically overwrite itself.
 
 # Downloading
 Release binaries are available on [GitHub](https://github.com/bannsec/cosmosocks/releases/latest).
