@@ -21,3 +21,7 @@ cosmosocks_server_ape: cosmosocks_server.c socks4.c
 
 clean:
 	rm -f cosmosocks_server.com.dbg cosmosocks_server.com cosmosocks_server_ape.com.dbg cosmosocks_server_ape.com
+
+test:
+	find tests/ -type f -print | xargs -I % bash % ${PWD}/cosmosocks_server.com 12345
+	find tests/ -type f -print | xargs -I % bash % ${PWD}/cosmosocks_server_ape.com 12345
