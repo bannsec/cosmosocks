@@ -10,6 +10,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: make
       run: make
+
+    - name: tests
+      run: make test
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0

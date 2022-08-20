@@ -1,3 +1,5 @@
+[![Build Artifacts](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml)
+
 # Overview
 This is a silly socks program built without a purpose. Primarily, I just wanted to learn more about the socks protocol internals. To add a twist, my goal is to build it entirely in [Cosmopolitian libc](https://justine.lol/cosmopolitan). This should allow the socks program to run across any platform cosmopolitan can run on, which includes Windows, Linux, and MacOS.
 
@@ -25,3 +27,4 @@ All dependencies are provided in this repository. Building the program is simple
   - [ ] UDP
   - [ ] Authentication: username/password
   - [ ] Handle returning error codes
+- [ ] Add other architectures
