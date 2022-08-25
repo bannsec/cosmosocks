@@ -36,6 +36,9 @@ typedef struct {
 // Output:
 //   bool - true if the request was read successfully, false otherwise
 static bool read_socks4_request(int sock, socks4_request *request) {
+    int i;
+    char c;
+    char domain[256] = {0};
     int n = read(sock, &request->command, 1);
     if (n < 0) {
         perror("read");
@@ -61,8 +64,8 @@ static bool read_socks4_request(int sock, socks4_request *request) {
         return false;
     }
 
-    // Read until we reach the null byte, ignoring for now
-    char c;
+    // Read until we reach the null byte, this is the "ID" field, not sure what it's used for
+    // ignoring for now
     do {
         n = read(sock, &c, 1);
         if (n < 0) {
@@ -73,7 +76,41 @@ static bool read_socks4_request(int sock, socks4_request *request) {
             return false;
         }
     } while (c != 0);
+    
+    // If the first three bytes of request->ip are 0 and the last byte is not 0, then this is a domain name request
+    if (request->ip != 0 && (request->ip & 0xffffff) == 0) {
+        if (domain == NULL) {
+            perror("malloc");
+            return false;
+        }
 
+        // Read until we reach the null byte, this is the "DOMAIN" field
+        i = 0;
+        do {
+            n = read(sock, &c, 1);
+            if (n < 0) {
+                perror("read");
+                return false;
+            }
+            if (n == 0) {
+                return false;
+            }
+            domain[i] = c;
+            i++;
+        } while (c != 0 && i < 256);
+
+
+        // Convert domain to IP address
+        struct hostent *host = gethostbyname(domain);
+        if (host == NULL) {
+            perror("gethostbyname");
+            return false;
+        }
+        // Copy the first IP address into the request->ip field
+        request->ip = *(uint32_t *)host->h_addr;
+
+        printf("Resolved %s: %s\n", domain, inet_ntoa(*((struct in_addr *)&request->ip)));
+    }
 
     return true;
 }

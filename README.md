@@ -25,7 +25,7 @@ All dependencies are provided in this repository. Building the program is simple
 - [ ] Socks4 support
   - [x] Connect
   - [ ] Bind
-  - [ ] Socks4a domain name resolve
+  - [x] Socks4a domain name resolve
 - [ ] Socks5 support
   - [x] Connect IPv4
   - [ ] Connect IPv6
@@ -38,3 +38,4 @@ All dependencies are provided in this repository. Building the program is simple
 - [ ] Refactor to use threads
 - [ ] Reverse socks
 - [ ] SSL listening port?
+- [ ] Optional debugging messages
