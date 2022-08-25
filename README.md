@@ -35,4 +35,6 @@ All dependencies are provided in this repository. Building the program is simple
   - [ ] UDP
   - [ ] Authentication: username/password
   - [ ] Handle returning error codes
-- [ ] Add other architectures
+- [ ] Refactor to use threads
+- [ ] Reverse socks
+- [ ] SSL listening port?
