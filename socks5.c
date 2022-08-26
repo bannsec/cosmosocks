@@ -48,21 +48,12 @@ bool authenticate_user(int sock, uint8_t *methods) {
     // Only allowing no authentication for now
     for (int i = 0; i < num_methods; i++) {
         if (methods[i] == 0) {
-            n = write(sock, response, 2);
-            if (n < 0) {
-                perror("write method authenticate_user");
-                return false;
-            }
+            if ( !write_check(sock, response, 2, "write method authenticate_user") ) return false;
             return true;
         }
     }
     response[1] = 0xFF;
-    n = write(sock, response, 2);
-    if (n < 0) {
-        perror("write method authenticate_user");
-        return false;
-    }
-
+    write_check(sock, response, 2, "write method authenticate_user");
     return false;
 }
 
@@ -124,72 +115,27 @@ bool send_socks5_response(int sock, uint8_t status, socks5_address *address) {
     uint8_t response[3] = {0x05, status, 0x00};
     int n;
 
-    n = write(sock, response, 3);
-    if (n < 0) {
-        perror("write response");
-        return false;
-    }
-    if (n == 0) return false;
+    if ( !write_check(sock, response, 3, "write response") ) return false;
 
     switch (address->atype) {
         case 1:
-            n = write(sock, &address->atype, 1);
-            if (n < 0) {
-                perror("write atype");
-                return false;
-            }
-            if (n == 0) return false;
-            n = write(sock, address->addr, 4);
-            if (n < 0) {
-                perror("write addr");
-                return false;
-            }
-            if (n == 0) return false;
+            if ( !write_check(sock, &address->atype, 1, "write atype") ) return false;
+            if ( !write_check(sock, address->addr, 4, "write addr") ) return false;
             break;
         case 3:
-            n = write(sock, &address->atype, 1);
-            if (n < 0) {
-                perror("write atype");
-                return false;
-            }
-            if (n == 0) return false;
-            n = write(sock, &address->addr_size, 1);
-            if (n < 0) {
-                perror("write addr");
-                return false;
-            }
-            if (n == 0) return false;
-            n = write(sock, address->addr, address->addr_size);
-            if (n < 0) {
-                perror("write addr");
-                return false;
-            }
-            if (n == 0) return false;
+            if ( !write_check(sock, &address->atype, 1, "write atype") ) return false;
+            if ( !write_check(sock, &address->addr_size, 1, "write addr_size") ) return false;
+            if ( !write_check(sock, address->addr, address->addr_size, "write addr") ) return false;
             break;
         case 4:
-            n = write(sock, &address->atype, 1);
-            if (n < 0) {
-                perror("write atype");
-                return false;
-            }
-            if (n == 0) return false;
-            n = write(sock, address->addr, 16);
-            if (n < 0) {
-                perror("write addr");
-                return false;
-            }
-            if (n == 0) return false;
+            if ( !write_check(sock, &address->atype, 1, "write atype") ) return false;
+            if ( !write_check(sock, address->addr, 16, "write addr") ) return false;
             break;
         default:
             return false;
     }
 
-    n = write(sock, &address->port, 2);
-    if (n < 0) {
-        perror("write port");
-        return false;
-    }
-    if (n == 0) return false;
+    if ( !write_check(sock, &address->port, 2, "write port") ) return false;
     return true;    
 }
 

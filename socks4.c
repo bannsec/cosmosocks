@@ -123,39 +123,10 @@ static bool read_socks4_request(int sock, socks4_request *request) {
 // Returns: boolean indicating success or failure
 static bool write_socks4_response(int sock, socks4_response *response) {
     // Write the version
-    int n = write(sock, &response->version, 1);
-    if (n < 0) {
-        perror("write");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
-
-    n = write(sock, &response->reply, 1);
-    if (n < 0) {
-        perror("write");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
-    n = write(sock, &response->port, 2);
-    if (n < 0) {
-        perror("write");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
-    n = write(sock, &response->ip, 4);
-    if (n < 0) {
-        perror("write");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
+    if (!write_check(sock, &response->version, 1, "write response version")) return false;
+    if (!write_check(sock, &response->reply, 1, "write response reply")) return false;
+    if (!write_check(sock, &response->port, 2, "write response port")) return false;
+    if (!write_check(sock, &response->ip, 4, "write response ip")) return false;
     return true;
 }
 
