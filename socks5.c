@@ -22,6 +22,9 @@ typedef struct {
 } socks5_address;
 
 #include "common.c"
+#include "auth.h"
+
+extern auth Authentication;
 
 uint8_t *get_requested_auth_methods(int sock) {
     if ( !read_check(sock, &num_methods, 1, "read num_methods") ) return NULL;
@@ -34,15 +37,82 @@ uint8_t *get_requested_auth_methods(int sock) {
     return methods;
 }
 
+// Function: authenticate_user_auth_username_password
+// Description: Authenticates the user with username and password
+// Steps:
+//   1. Read one byte from the socket, this is the Version field, must be 0x01
+//   2. Read one byte from the socket, this is the IDLen field. It is uint8_t
+//   3. Read the IDLen bytes from the socket, this is the ID field (char *)
+//   4. Read one byte from the socket, this is the PasswordLen field. It is uint8_t
+//   5. Read the PasswordLen bytes from the socket, this is the Password field (char *)
+// Input:
+//   int sock - the socket to read from
+// Output:
+//   bool - true if the user was authenticated, false otherwise
+bool authenticate_user_auth_username_password(int sock) {
+    uint8_t version = 0;
+    uint8_t id_len = 0;
+    uint8_t password_len = 0;
+    bool success = false;
+
+    char *id = NULL;
+    char *password = NULL;
+    if ( !read_check(sock, &version, 1, "read version") ) goto beach;
+
+    if ( version != 0x01 ) {
+        fprintf(stderr, "Invalid version\n");
+        goto beach;
+    }
+    if ( !read_check(sock, &id_len, 1, "read id_len") ) goto beach;
+    id = malloc(id_len);
+    if ( !read_check(sock, id, id_len, "read id") ) {
+        goto beach;
+    }
+    if ( !read_check(sock, &password_len, 1, "read password_len") ) {
+        goto beach;
+    }
+    password = malloc(password_len);
+    if ( !read_check(sock, password, password_len, "read password") ) {
+        goto beach;
+    }
+    if (strcmp(id, Authentication.data->userpass->username) == 0 && strcmp(password, Authentication.data->userpass->password) == 0) {
+        success = true;
+        goto beach;
+    }
+    printf("Invalid username or password\n");
+
+    beach:
+    free(id);
+    free(password);
+    return success;
+}
+
 bool authenticate_user(int sock, uint8_t *methods) {
     uint8_t response[2] = {0x05, 0x00};
-    int n;
+    int ver = 1;
+    int status = 0;
 
-    // Only allowing no authentication for now
     for (int i = 0; i < num_methods; i++) {
-        if (methods[i] == 0) {
+        if (Authentication.type == AUTH_NONE && methods[i] == 0) {
+            // Tell client we agree
             if ( !write_check(sock, response, 2, "write method authenticate_user") ) return false;
             return true;
+        } else if (Authentication.type == AUTH_USERPASS && methods[i] == 2) {
+            // Tell client we agree. We should get auth next
+            response[1] = 2;
+            if ( !write_check(sock, response, 2, "write method authenticate_user") ) return false;
+            if ( authenticate_user_auth_username_password(sock) ) {
+                // Auth was good
+                status = 0;
+                if ( !write_check(sock, &ver, 1, "write method authenticate_user") ) return false;
+                if ( !write_check(sock, &status, 1, "write method authenticate_user") ) return false;
+                return true;
+            } else {
+                // Auth was bad
+                status = 1;
+                if ( !write_check(sock, &ver, 1, "write method authenticate_user") ) return false;
+                if ( !write_check(sock, &status, 1, "write method authenticate_user") ) return false;
+            }
         }
     }
     response[1] = 0xFF;

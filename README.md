@@ -14,6 +14,17 @@ This is a silly socks program built without a purpose. Primarily, I just wanted 
 # Running
 The two binaries that are built are `cosmosocks_server` and `cosmosocks_server_ape`. The two binaries are functionally the same, but the former will unpack itself into a temporary directory while the later will dynamically overwrite itself.
 
+```bash
+# Basic run with no arguments will bind global on port 1080
+cosmosocks_server
+
+# Specify a port to bind to
+cosmosocks_server -p 8080
+
+# Specify a username/password for authentication
+cosmosocks_server -U user -P password
+```
+
 # Downloading
 Release binaries are available on [GitHub](https://github.com/bannsec/cosmosocks/releases/latest).
 
@@ -33,7 +44,7 @@ All dependencies are provided in this repository. Building the program is simple
   - [ ] Bind IPv4
   - [ ] Bind IPv6
   - [ ] UDP
-  - [ ] Authentication: username/password
+  - [x] Authentication: username/password
   - [ ] Handle returning error codes
 - [ ] Refactor to use threads
 - [ ] Reverse socks

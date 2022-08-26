@@ -15,7 +15,7 @@
 
 #include "socks4.h"
 #include "socks5.h"
-
+#include "common.c"
 
 // Function: handle_new_server_connection
 // Description:
@@ -24,14 +24,8 @@
 //   int sock - the socket on which the request was received
 static void handle_new_server_connection(int sock) {
     char version;
-    int n = read(sock, &version, 1);
-    if (n < 0) {
-        perror("read");
-        return;
-    }
-    if (n == 0) {
-        return;
-    }
+    if ( !read_check(sock, &version, 1, "read version") ) return;
+
     if (version == 4) {
         handle_new_socks4_connection(sock);
     } else if (version == 5) {
