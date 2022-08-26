@@ -39,62 +39,23 @@ static bool read_socks4_request(int sock, socks4_request *request) {
     int i;
     char c;
     char domain[256] = {0};
-    int n = read(sock, &request->command, 1);
-    if (n < 0) {
-        perror("read");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
-    n = read(sock, &request->port, 2);
-    if (n < 0) {
-        perror("read");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
-    n = read(sock, &request->ip, 4);
-    if (n < 0) {
-        perror("read");
-        return false;
-    }
-    if (n == 0) {
-        return false;
-    }
+    int n;
+    if ( !read_check(sock, &request->command, 1, "read command") ) return false;
+    if ( !read_check(sock, &request->port, 2, "read port") ) return false;
+    if ( !read_check(sock, &request->ip, 4, "read ip") ) return false;
 
     // Read until we reach the null byte, this is the "ID" field, not sure what it's used for
     // ignoring for now
     do {
-        n = read(sock, &c, 1);
-        if (n < 0) {
-            perror("read");
-            return false;
-        }
-        if (n == 0) {
-            return false;
-        }
+        if ( !read_check(sock, &c, 1, "read ID") ) return false;
     } while (c != 0);
     
     // If the first three bytes of request->ip are 0 and the last byte is not 0, then this is a domain name request
     if (request->ip != 0 && (request->ip & 0xffffff) == 0) {
-        if (domain == NULL) {
-            perror("malloc");
-            return false;
-        }
-
         // Read until we reach the null byte, this is the "DOMAIN" field
         i = 0;
         do {
-            n = read(sock, &c, 1);
-            if (n < 0) {
-                perror("read");
-                return false;
-            }
-            if (n == 0) {
-                return false;
-            }
+            if (!read_check(sock, &c, 1, "read domain")) return false;
             domain[i] = c;
             i++;
         } while (c != 0 && i < 256);

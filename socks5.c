@@ -24,20 +24,13 @@ typedef struct {
 #include "common.c"
 
 uint8_t *get_requested_auth_methods(int sock) {
-    int n = read(sock, &num_methods, 1);
-    if (n < 0) {
-        perror("read num_methods");
-        return NULL;
-    }
-    if (n == 0) return NULL;
+    if ( !read_check(sock, &num_methods, 1, "read num_methods") ) return NULL;
 
     uint8_t *methods = malloc(num_methods);
-    n = read(sock, methods, num_methods);
-    if (n < 0) {
-        perror("read methods");
+    if ( !read_check(sock, methods, num_methods, "read methods") ) {
+        free(methods);
         return NULL;
     }
-    if (n == 0) return NULL;
     return methods;
 }
 
@@ -58,56 +51,47 @@ bool authenticate_user(int sock, uint8_t *methods) {
 }
 
 socks5_address *read_socks5_address(int sock) {
+    int n;
     socks5_address *addr = malloc(sizeof(socks5_address));
-    int n = read(sock, &addr->atype, 1);
-    if (n < 0) {
-        perror("read atype");
-        return NULL;
-    }
-    if (n == 0) return NULL;
+    if ( !read_check(sock, &addr->atype, 1, "read atype") ) return NULL;
+
     switch (addr->atype) {
         case 1:
             addr->addr = malloc(4);
-            n = read(sock, addr->addr, 4);
-            if (n < 0) {
-                perror("read addr");
+            if ( !read_check(sock, addr->addr, 4, "read ip") ) {
+                free(addr->addr);
+                free(addr);
                 return NULL;
             }
-            if (n == 0) return NULL;
             break;
         case 3:
-            n = read(sock, &addr->addr_size, 1);
-            if (n < 0) {
-                perror("read addr_size");
+            if ( !read_check(sock, &addr->addr_size, 1, "read addr_size") ) {
+                free(addr);
                 return NULL;
             }
-            if (n == 0) return NULL;
             addr->addr = malloc(addr->addr_size);
-            n = read(sock, addr->addr, addr->addr_size);
-            if (n < 0) {
-                perror("read addr");
+            if ( !read_check(sock, addr->addr, addr->addr_size, "read domain") ) {
+                free(addr->addr);
+                free(addr);
                 return NULL;
             }
-            if (n == 0) return NULL;
             break;
         case 4:
             addr->addr = malloc(16);
-            n = read(sock, addr->addr, 16);
-            if (n < 0) {
-                perror("read addr");
+            if ( !read_check(sock, addr->addr, 16, "read ipv6") ) {
+                free(addr->addr);
+                free(addr);
                 return NULL;
             }
-            if (n == 0) return NULL;
             break;
         default:
             return NULL;
     }
-    n = read(sock, &addr->port, 2);
-    if (n < 0) {
-        perror("read port");
+    if ( !read_check(sock, &addr->port, 2, "read port") ) {
+        free(addr->addr);
+        free(addr);
         return NULL;
     }
-    if (n == 0) return NULL;
     return addr;
 }
 
@@ -218,30 +202,16 @@ bool handle_new_socks5_connection(int sockfd) {
 
     free(methods);
 
-    n = read(sockfd, &version, 1);
-    if (n < 0) {
-        perror("read version");
-        return false;
-    }
-    if (n == 0) return false;
+    if (!read_check(sockfd, &version, 1, "read version")) return false;
+
     if (version != 0x05) {
         printf("Invalid version: %d\n", version);
         return false;
     }
 
-    n = read(sockfd, &command, 1);
-    if (n < 0) {
-        perror("read command");
-        return false;
-    }
-    if (n == 0) return false;
+    if (!read_check(sockfd, &command, 1, "read command")) return false;
+    if (!read_check(sockfd, &reserved, 1, "read reserved")) return false;
 
-    n = read(sockfd, &reserved, 1);
-    if (n < 0) {
-        perror("read reserved");
-        return false;
-    }
-    if (n == 0) return false;
     if (reserved != 0x00) {
         printf("Invalid reserved: %d\n", reserved);
         return false;

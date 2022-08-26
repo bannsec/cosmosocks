@@ -84,7 +84,7 @@ static bool connect_sockets(int sock1, int sock2) {
 // Description: Performs write to a socket and checks for errors.
 // Parameters:
 //   int sock - the socket to write to
-//   const char *buffer - the buffer to write
+//   const void *buffer - the buffer to write
 //   int length - the length of the buffer
 //   const char *error - the error message to print if an error occurs
 // Returns: boolean indicating success or failure
@@ -96,6 +96,27 @@ static bool write_check(int sock, const void *buffer, int length, const char *er
     }
     if (n != length) {
         fprintf(stderr, "write: wrote %d bytes, expected %d\n", n, length);
+        return false;
+    }
+    return true;
+}
+
+// Function: read_check
+// Description: Performs read from a socket and checks for errors.
+// Parameters:
+//   int sock - the socket to read from
+//   void *buffer - the buffer to read into
+//   int length - the length of the buffer
+//   const char *error - the error message to print if an error occurs
+// Returns: boolean indicating success or failure
+static bool read_check(int sock, void *buffer, int length, const char *error) {
+    int n = read(sock, buffer, length);
+    if (n < 0) {
+        perror(error);
+        return false;
+    }
+    if (n != length) {
+        fprintf(stderr, "read: read %d bytes, expected %d\n", n, length);
         return false;
     }
     return true;
