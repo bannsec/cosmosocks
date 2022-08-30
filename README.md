@@ -9,7 +9,7 @@
 ![FreeBSD](https://github.com/bannsec/cosmosocks/raw/master/icons/freebsd.png)
 
 # Overview
-This is a silly socks program built without a purpose. Primarily, I just wanted to learn more about the socks protocol internals. To add a twist, my goal is to build it entirely in [Cosmopolitian libc](https://justine.lol/cosmopolitan). This should allow the socks program to run across any platform cosmopolitan can run on, which includes Windows, Linux, and MacOS.
+`Cosmosocks` is a socks server written entirely in [Cosmopolitian libc](https://justine.lol/cosmopolitan). This allows the socks program to run across any platform cosmopolitan can run on, which includes Windows, Linux, MacOS and more.
 
 # Running
 The two binaries that are built are `cosmosocks_server` and `cosmosocks_server_ape`. The two binaries are functionally the same, but the former will unpack itself into a temporary directory while the later will dynamically overwrite itself.
