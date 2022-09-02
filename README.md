@@ -30,23 +30,3 @@ Release binaries are available on [GitHub](https://github.com/bannsec/cosmosocks
 
 # Building
 All dependencies are provided in this repository. Building the program is simple as running `make`.
-
-# TODO:
-
-- [ ] Socks4 support
-  - [x] Connect
-  - [ ] Bind
-  - [x] Socks4a domain name resolve
-- [ ] Socks5 support
-  - [x] Connect IPv4
-  - [ ] Connect IPv6
-  - [x] Connect domain name resolve (socks5h)
-  - [ ] Bind IPv4
-  - [ ] Bind IPv6
-  - [ ] UDP
-  - [x] Authentication: username/password
-  - [ ] Handle returning error codes
-- [ ] Refactor to use threads
-- [ ] Reverse socks
-- [ ] SSL listening port?
-- [ ] Optional debugging messages
