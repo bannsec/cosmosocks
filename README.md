@@ -1,4 +1,4 @@
-[![Tests:Linux](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml/badge.svg)](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml)
+[![Build and test](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml/badge.svg)](https://github.com/bannsec/cosmosocks/actions/workflows/build.yml)
 
 ![Windows](https://github.com/bannsec/cosmosocks/raw/master/icons/windows.png)
 ![Apple](https://github.com/bannsec/cosmosocks/raw/master/icons/apple.png)
