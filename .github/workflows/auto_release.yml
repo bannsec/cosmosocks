@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: make
-        run: make
+        run: make COSMO=amalgamation-tiny
         #- name: Test
         #run: cat Release.txt
       - name: Release
