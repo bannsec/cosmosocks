@@ -68,17 +68,19 @@ bool authenticate_user_auth_username_password(int sock) {
         goto beach;
     }
     if ( !read_check(sock, &id_len, 1, "read id_len") ) goto beach;
-    id = malloc(id_len);
+    id = malloc(id_len + 1);
     if ( !read_check(sock, id, id_len, "read id") ) {
         goto beach;
     }
+    id[id_len] = '\0';
     if ( !read_check(sock, &password_len, 1, "read password_len") ) {
         goto beach;
     }
-    password = malloc(password_len);
+    password = malloc(password_len + 1);
     if ( !read_check(sock, password, password_len, "read password") ) {
         goto beach;
     }
+    password[password_len] = '\0';
     if (strcmp(id, Authentication.data->userpass->username) == 0 && strcmp(password, Authentication.data->userpass->password) == 0) {
         success = true;
         goto beach;
