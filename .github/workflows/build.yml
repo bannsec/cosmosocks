@@ -34,6 +34,6 @@ jobs:
     - name: tests
       run: |
           echo 0 | sudo tee /proc/sys/fs/binfmt_misc/status
-          chmod +x ${{steps.download.outputs.download-path}}/*
-          cp ${{steps.download.outputs.download-path}}/* .
+          chmod +x cosmosocks/*
+          cp cosmosocks/* .
           make test
