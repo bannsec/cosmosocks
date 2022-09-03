@@ -30,3 +30,10 @@ Release binaries are available on [GitHub](https://github.com/bannsec/cosmosocks
 
 # Building
 All dependencies are provided in this repository. Building the program is simple as running `make`.
+
+If you want to use a different cosmopolitan amalgamation, you can specify it with `COSMO`:
+
+```bash
+make COSMO=amalgamation-dbg
+make COSMO=amalgamation-tiny
+```

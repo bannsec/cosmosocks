@@ -1,8 +1,13 @@
 
 cosmopolitan-base-url = https://justine.lol/cosmopolitan
-cosmopolitan-amalgamation = cosmopolitan-amalgamation-2.0.1.zip
+cosmopolitan-version = 2.0.1
 
-cosmopolitan-download = $(cosmopolitan-base-url)/$(cosmopolitan-amalgamation)
+ifeq ($(COSMO),)
+COSMO = amalgamation
+endif
+
+cosmopolitan = cosmopolitan-$(COSMO)-$(cosmopolitan-version).zip
+cosmopolitan-download = $(cosmopolitan-base-url)/$(cosmopolitan)
 cosmopolitan-dir = cosmopolitan
 
 
@@ -23,13 +28,13 @@ cosmosocks_server_ape: cosmopolitan cosmosocks_server.c socks4.c socks5.c common
 	objcopy -S -O binary cosmosocks_server.com.dbg cosmosocks_server_ape
 
 cosmopolitan:
-	[ -d cosmopolitan ] || wget $(cosmopolitan-download) && unzip -d $(cosmopolitan-dir) $(cosmopolitan-amalgamation)
+	[ -d cosmopolitan ] || wget $(cosmopolitan-download) && unzip -d $(cosmopolitan-dir) $(cosmopolitan)
 
 clean:
 	rm -f cosmosocks_server.com.dbg cosmosocks_server cosmosocks_server_ape.com.dbg cosmosocks_server_ape
 
 distclean: clean
-	rm -rf cosmopolitan $(cosmopolitan-amalgamation)
+	rm -rf cosmopolitan $(cosmopolitan)
 
 test:
 	find tests/ -type f -print | xargs -I % bash % ${PWD}/cosmosocks_server 12345

@@ -11,6 +11,10 @@
 #include <netinet/in.h>
 */
 
+STATIC_YOINK("__die");
+STATIC_YOINK("malloc_inspect_all");
+STATIC_YOINK("__get_symbol_by_addr");
+
 uint8_t num_methods = 0;
 
 // Address type struct
