@@ -145,12 +145,13 @@ socks5_address *read_socks5_address(int sock) {
                 free(addr);
                 return NULL;
             }
-            addr->addr = malloc(addr->addr_size);
+            addr->addr = malloc(addr->addr_size+1);
             if ( !read_check(sock, addr->addr, addr->addr_size, "read domain") ) {
                 free(addr->addr);
                 free(addr);
                 return NULL;
             }
+            addr->addr[addr->addr_size] = '\0';
             break;
         case 4:
             addr->addr = malloc(16);
