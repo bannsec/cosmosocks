@@ -33,5 +33,5 @@ jobs:
     - name: tests
       run: |
           echo 0 | sudo tee /proc/sys/fs/binfmt_misc/status
-          copy cosmosocks/* .
+          cp cosmosocks/* .
           make test
