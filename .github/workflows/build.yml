@@ -3,12 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-        fail-fast: false
-        matrix:
-            os: [ubuntu-latest, macOS-latest]
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: make
@@ -30,7 +25,11 @@ jobs:
             cosmosocks_server_ape
         if-no-files-found: error
   tests-linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+        fail-fast: false
+        matrix:
+            os: [ubuntu-latest, macOS-latest]
     needs: build
     steps:
     - uses: actions/checkout@v3
