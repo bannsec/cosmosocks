@@ -24,19 +24,35 @@ jobs:
             cosmosocks_server
             cosmosocks_server_ape
         if-no-files-found: error
-  tests-linux:
+  linux:
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
         matrix:
-            os: [ubuntu-latest, macOS-latest]
+            os: [ubuntu-latest]
     needs: build
     steps:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
     - name: tests
       run: |
-          echo 0 | sudo tee /proc/sys/fs/binfmt_misc/status || true
+          echo 0 | sudo tee /proc/sys/fs/binfmt_misc/status
           chmod +x cosmosocks/*
           cp cosmosocks/* .
+          make test
+  macos:
+    runs-on: ${{ matrix.os }}
+    strategy:
+        fail-fast: false
+        matrix:
+            os: [macOS-latest]
+    needs: build
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+    - name: tests
+      run: |
+          chmod +x cosmosocks/*
+          cp cosmosocks/* .
+          NONINTERACTIVE=1 brew install coreutils
           make test
