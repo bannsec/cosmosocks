@@ -85,6 +85,17 @@ int main(int argc, char **argv, char **envp)
         exit(1);
     }
 
+    // Restrict the server to the capabilities it needs.
+    const char *sandbox_paths = "/etc\0/etc/hosts\0/etc/resolv.conf\0/tmp\0/dev/null";
+    if (pledge("dns inet stdio proc rpath", sandbox_paths) != 0) {
+        perror("pledge");
+        exit(1);
+    }
+    if (unveil(sandbox_paths) != 0) {
+        perror("unveil");
+        exit(1);
+    }
+
     // Start the server
     start_socks_server(port, ip);
 
